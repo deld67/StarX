@@ -5,49 +5,71 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.base.BaseScreen;
+import ru.geekbrains.math.Rect;
+import ru.geekbrains.sprite.Background;
 
 public class MenuScreen extends BaseScreen {
     private static final String ImgFileName = "badlogic.jpg";
+    private static final String BackGroundFileName = "starsbg1080.jpg";
+    private static final float V_LEN = 0.8f;
+
     private Texture img;
+    private Texture backgroundImg;
+    private Background background;
+
     private Vector2 pos;
     private Vector2 v;
-    private Vector2 touch;
+
+    private Vector2 common;
 
     @Override
     public void show() {
         super.show();
         img = new Texture(ImgFileName);
+        backgroundImg = new Texture(BackGroundFileName);
+        background = new Background(backgroundImg);
+
         pos = new Vector2();
-        v = new Vector2(1, 1);
-        touch = new Vector2(100, 100);
+        v = new Vector2();
+
+        common = new Vector2();
+
+
+    }
+
+    @Override
+    public void resize(Rect wordBounds) {
+        background.resize(wordBounds);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
+       // common.set(touch);
 
-        if (Math.round(pos.x) == Math.round(touch.x) && Math.round(pos.y) == Math.round(touch.y)){
-            v.set(0,0);
-        }
-
-        pos.add(v);
+        /*if (common.sub(pos).len() > V_LEN){
+            pos.add(v);
+        }else {
+            pos.set(touch);
+            v.setZero();
+        }*/
         batch.begin();
-        batch.draw(img, pos.x, pos.y);
+        background.drow(batch);
+        //batch.draw(img, pos.x, pos.y, 0.5f, 0.5f);
         batch.end();
     }
 
     @Override
     public void dispose() {
         img.dispose();
+        backgroundImg.dispose();
         super.dispose();
     }
-    @Override
+   /* @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         touch.set(screenX, Gdx.graphics.getHeight() - screenY);
-        System.out.println("touchDown touch.x = " + touch.x + " touch.y = " + touch.y);
-        //pos.set(touch);
-        v = touch.cpy().sub(pos).nor();
-
+        v.set(touch.cpy().sub(pos));
+        v.setLength(V_LEN);
         return super.touchDown(screenX, screenY, pointer, button);
-    }
+    }*/
 }
