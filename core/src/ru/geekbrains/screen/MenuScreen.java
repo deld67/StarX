@@ -17,11 +17,11 @@ import ru.geekbrains.sprite.Logo;
 import ru.geekbrains.sprite.Star;
 
 public class MenuScreen extends BaseScreen {
-    private static final String ImgFileName = "badlogic.jpg";
-    private static final String BackGroundFileName = "textures/bg.png";
-    private static final String AtlasFilePath = "textures/menuAtlas.tpack";
+    private static final String IMG_FILE_NAME = "badlogic.jpg";
+    private static final String BACKGROUND_FILE_NAME = "textures/bg.png";
+    private static final String ATLAS_FILE_PATH = "textures/menuAtlas.tpack";
 
-    private static final int StarsCount = 256;
+    private static final int STARS_COUNT = 256;
 
     private final Game game;
     private Texture img;
@@ -41,14 +41,14 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void show() {
         super.show();
-        img = new Texture(ImgFileName);
-        backgroundImg = new Texture(BackGroundFileName);
+        img = new Texture(IMG_FILE_NAME);
+        backgroundImg = new Texture(BACKGROUND_FILE_NAME);
         background = new Background(backgroundImg);
-        atlas = new TextureAtlas(Gdx.files.internal(AtlasFilePath));
+        atlas = new TextureAtlas(Gdx.files.internal(ATLAS_FILE_PATH));
         buttonExit = new ButtonExit(atlas);
         buttonPlay = new ButtonPlay(atlas, game);
         logo = new Logo(img);
-        stars = new Star[StarsCount];
+        stars = new Star[STARS_COUNT];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
@@ -79,7 +79,6 @@ public class MenuScreen extends BaseScreen {
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         buttonExit.touchDown(touch,pointer,button);
         buttonPlay.touchDown(touch,pointer,button);
-        //logo.touchDown(touch,pointer,button);
         return false;
     }
 
@@ -117,5 +116,7 @@ public class MenuScreen extends BaseScreen {
         atlas.dispose();
         super.dispose();
     }
+
+
 
 }
