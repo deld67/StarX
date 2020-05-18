@@ -1,12 +1,14 @@
 package ru.geekbrains.sprite;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
+import ru.geekbrains.math.Rnd;
 import ru.geekbrains.pool.BulletPool;
 
 public class MainShip extends Sprite {
@@ -15,6 +17,7 @@ public class MainShip extends Sprite {
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
+    private static final float SHOOT_INTERVAL = 0.1f ;
 
     private final Vector2 v0;
     private final  Vector2 v;
@@ -28,8 +31,12 @@ public class MainShip extends Sprite {
     private BulletPool bulletPool;
     private TextureRegion bulletRegion;
     private Vector2 bulletV;
+    private Sound sound ;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
+    private float shootTimer;
+    private boolean startAutoShoot;
+
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool, Sound sound) {
         super(atlas.findRegion(SHIP_NAME), 1, 2, 2);
         this.bulletPool = bulletPool;
         bulletRegion = atlas.findRegion(SHIP_BULLET_NAME);
@@ -38,6 +45,8 @@ public class MainShip extends Sprite {
         v = new Vector2();
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
+        this.sound = sound;
+        startAutoShoot = false;
     }
 
     @Override
@@ -58,6 +67,7 @@ public class MainShip extends Sprite {
             stop();
             setRight(worldBounds.getRight());
         }
+        ManyShoot(delta);
     }
 
     @Override
@@ -111,7 +121,7 @@ public class MainShip extends Sprite {
                 moveRight();
                 break;
             case Input.Keys.UP:
-                shoot();
+                startAutoShoot = true;
                 break;
         }
         return false;
@@ -137,6 +147,9 @@ public class MainShip extends Sprite {
                     stop();
                 }
                 break;
+            case Input.Keys.UP:
+                startAutoShoot = false;
+                break;
         }
         return false;
     }
@@ -153,8 +166,17 @@ public class MainShip extends Sprite {
         v.setZero();
     }
 
+    private void ManyShoot(float delta) {
+        shootTimer += delta;
+        if (shootTimer >= SHOOT_INTERVAL && startAutoShoot) {
+            shootTimer = 0f;
+            shoot();
+        }
+    }
+
     private void shoot() {
         Bullet bullet = bulletPool.obtain();
         bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
+        sound.play(1.0f);
     }
 }

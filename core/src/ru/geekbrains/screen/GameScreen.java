@@ -1,6 +1,8 @@
 package ru.geekbrains.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +17,8 @@ import ru.geekbrains.sprite.Star;
 public class GameScreen extends BaseScreen {
     private static final String BACKGROUND_FILE_NAME = "textures/bg.png";
     private static final String MAIN_ATLAS_FILE_PATH = "textures/mainAtlas.tpack";
+    private static final String SHIP_GUN_SOOT_SOUND = "sounds/soot.mp3";
+    private static final String BACKGROUND_MUSIC = "music/videoplayback.mp3";
 
     private static final int STARS_COUNT = 64;
 
@@ -26,6 +30,8 @@ public class GameScreen extends BaseScreen {
     private MainShip mainShip;
     private BulletPool bulletPool;
 
+    private Sound sound ;
+    private Music music;
     @Override
     public void show() {
         super.show();
@@ -37,7 +43,11 @@ public class GameScreen extends BaseScreen {
             stars[i] = new Star(mainAtlas);
         }
         bulletPool = new BulletPool();
-        mainShip = new MainShip(mainAtlas, bulletPool);
+        sound = Gdx.audio.newSound(Gdx.files.internal(SHIP_GUN_SOOT_SOUND));
+        mainShip = new MainShip(mainAtlas, bulletPool, sound);
+        music = Gdx.audio.newMusic(Gdx.files.internal(BACKGROUND_MUSIC));
+        music.play();
+        music.setLooping(true);
     }
 
     @Override
@@ -107,9 +117,12 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public void dispose() {
+        music.stop();
+        music.dispose();
         backgroundImg.dispose();
         mainAtlas.dispose();
         bulletPool.dispose();
+        sound.dispose();
         super.dispose();
     }
 }
