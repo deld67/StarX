@@ -60,7 +60,6 @@ public class MenuScreen extends BaseScreen {
         buttonExit.resize(wordBounds);
         buttonPlay.resize(wordBounds);
         logo.resize(wordBounds);
-
         for (int i = 0; i < stars.length ; i++) {
             stars[i].resize(wordBounds);
         }
@@ -70,9 +69,7 @@ public class MenuScreen extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
         update(delta);
-        drow();
-
-
+        draw();
     }
 
     @Override
@@ -96,16 +93,15 @@ public class MenuScreen extends BaseScreen {
         }
     }
 
-    private void drow(){
+    private void draw(){
         batch.begin();
-        background.drow(batch);
-
+        background.draw(batch);
         for (int i = 0; i < stars.length ; i++) {
-            stars[i].drow(batch);
+            stars[i].draw(batch);
         }
-        logo.drow(batch);
-        buttonExit.drow(batch);
-        buttonPlay.drow(batch);
+        logo.draw(batch);
+        buttonExit.draw(batch);
+        buttonPlay.draw(batch);
         batch.end();
     }
 
@@ -116,7 +112,4 @@ public class MenuScreen extends BaseScreen {
         atlas.dispose();
         super.dispose();
     }
-
-
-
 }
