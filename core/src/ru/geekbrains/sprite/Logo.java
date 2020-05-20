@@ -9,38 +9,25 @@ import ru.geekbrains.base.Sprite;
 import ru.geekbrains.math.Rect;
 
 public class Logo  extends Sprite {
-    private static final float V_LEN = 0.0008f;
+    private static final float V_LEN = 0.01f;
 
-    private Vector2 pos;
     private Vector2 v;
     private Vector2 touch;
+    private Vector2 common;
 
 
     public Logo(Texture texture) {
         super(new TextureRegion(texture));
 
-        pos = new Vector2();
         v = new Vector2();
         touch = new Vector2();
-    }
-
-    @Override
-    public void drow(SpriteBatch batch) {
-        batch.draw(
-                regions[frame],
-                pos.x, pos.y,
-                halfWidth, halfHeight,
-                getWidth(), getHeight(),
-                scale,scale,
-                angle
-        );
+        common = new Vector2();
     }
 
     @Override
     public void update(float delta) {
-        //
-
-        if(isMe(pos)){
+        common.set(touch);
+        if (common.sub(pos).len() > V_LEN){
             pos.add(v);
         }else{
             pos.set(touch);
@@ -50,15 +37,13 @@ public class Logo  extends Sprite {
 
     @Override
     public void resize(Rect wordBounds) {
-        setHeightProportion(0.2f);
-        this.pos.set(wordBounds.pos);
+        setHeightProportion(0.3f);
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         this.touch.set(touch);
-        v.set(touch.cpy().sub(pos));
-        v.setLength(V_LEN);
+        v.set(touch.sub(pos)).setLength(V_LEN);
         return false;
     }
 }
