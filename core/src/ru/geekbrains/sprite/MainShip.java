@@ -1,64 +1,60 @@
 package ru.geekbrains.sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.geekbrains.base.Sprite;
+import ru.geekbrains.base.Ship;
 import ru.geekbrains.math.Rect;
-import ru.geekbrains.math.Rnd;
 import ru.geekbrains.pool.BulletPool;
+import ru.geekbrains.pool.ExplosionPool;
 
-public class MainShip extends Sprite {
+public class MainShip extends Ship {
     private static final String SHIP_NAME = "main_ship";
     private static final String SHIP_BULLET_NAME = "bulletMainShip";
+    private static final String SHIP_GUN_SOOT_SOUND = "sounds/soot.mp3";
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
-    private static final float SHOOT_INTERVAL = 0.1f ;
+    private static final int HP = 100;
 
-    private final Vector2 v0;
-    private final  Vector2 v;
+
     private int leftPointer;
     private int rightPointer;
 
     private boolean pressedLeft;
     private boolean pressedRight;
-    private Rect worldBounds;
 
-    private BulletPool bulletPool;
-    private TextureRegion bulletRegion;
-    private Vector2 bulletV;
-    private Sound sound ;
 
-    private float shootTimer;
-    private boolean startAutoShoot;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool, Sound sound) {
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool) {
         super(atlas.findRegion(SHIP_NAME), 1, 2, 2);
         this.bulletPool = bulletPool;
+        this.explosionPool = explosionPool;
         bulletRegion = atlas.findRegion(SHIP_BULLET_NAME);
         bulletV = new Vector2(0, 0.5f);
-        v0 = new Vector2(0.5f, 0);
-        v = new Vector2();
+        v0.set(0.5f, 0);
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
-        this.sound = sound;
+        sound = Gdx.audio.newSound(Gdx.files.internal(SHIP_GUN_SOOT_SOUND));
         startAutoShoot = false;
+        reloadInterval = 0.1f ;
+        bulletHight = 0.01f;
+        damage = 1;
+        hp = HP;
     }
 
     @Override
     public void resize(Rect wordBounds) {
-        this.worldBounds = wordBounds;
+        super.resize(wordBounds);
         setHeightProportion(SHIP_HEIGHT);
         setBottom(wordBounds.getBottom() + MARGIN);
     }
 
     @Override
     public void update(float delta) {
-        pos.mulAdd(v, delta);
+        super.update(delta);
         if (getLeft() < worldBounds.getLeft()) {
             stop();
             setLeft(worldBounds.getLeft());
@@ -67,7 +63,7 @@ public class MainShip extends Sprite {
             stop();
             setRight(worldBounds.getRight());
         }
-        ManyShoot(delta);
+
     }
 
     @Override
@@ -153,7 +149,9 @@ public class MainShip extends Sprite {
         }
         return false;
     }
-
+    public void dispose(){
+        sound.dispose();
+    }
     private void moveRight() {
         v.set(v0);
     }
@@ -166,17 +164,4 @@ public class MainShip extends Sprite {
         v.setZero();
     }
 
-    private void ManyShoot(float delta) {
-        shootTimer += delta;
-        if (shootTimer >= SHOOT_INTERVAL && startAutoShoot) {
-            shootTimer = 0f;
-            shoot();
-        }
-    }
-
-    private void shoot() {
-        Bullet bullet = bulletPool.obtain();
-        bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
-        sound.play(1.0f);
-    }
 }
