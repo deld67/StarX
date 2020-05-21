@@ -19,7 +19,7 @@ public class BaseScreen implements Screen, InputProcessor {
     protected SpriteBatch batch;
 
     private Rect screenBounds;
-    private Rect wordBounds;
+    protected Rect wordBounds;
     private Rect glBounds;
 
     private Matrix4 worldToGl;
