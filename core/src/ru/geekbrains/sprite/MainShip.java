@@ -14,10 +14,14 @@ public class MainShip extends Ship {
     private static final String SHIP_NAME = "main_ship";
     private static final String SHIP_BULLET_NAME = "bulletMainShip";
     private static final String SHIP_GUN_SOOT_SOUND = "sounds/soot.mp3";
+
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float MARGIN = 0.05f;
+    private static final float[] BULLET_HEIGHT = new float[]{0.01f, 0.015f, 0.02f, 0.025f, 0.03f};
+
+    private static final int[] BULLET_DAMAGE = new int[]{1, 2, 3, 5, 10};
     private static final int INVALID_POINTER = -1;
-    private static final int HP = 100;
+    private static final int HP = 10;
 
 
     private int leftPointer;
@@ -40,8 +44,8 @@ public class MainShip extends Ship {
         sound = Gdx.audio.newSound(Gdx.files.internal(SHIP_GUN_SOOT_SOUND));
         startAutoShoot = false;
         reloadInterval = 0.1f ;
-        bulletHight = 0.01f;
-        damage = 1;
+        bulletHight = BULLET_HEIGHT[0];
+        damage = BULLET_DAMAGE[0];
         hp = HP;
     }
 
@@ -55,6 +59,7 @@ public class MainShip extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
+        bulletPos.set(pos.x, pos.y+getHalfHeight());
         if (getLeft() < worldBounds.getLeft()) {
             stop();
             setLeft(worldBounds.getLeft());
@@ -119,6 +124,26 @@ public class MainShip extends Ship {
             case Input.Keys.UP:
                 startAutoShoot = true;
                 break;
+            case Input.Keys.NUM_1:
+                bulletHight = BULLET_HEIGHT[0];
+                damage = BULLET_DAMAGE[0];
+                break;
+            case Input.Keys.NUM_2:
+                bulletHight = BULLET_HEIGHT[1];
+                damage = BULLET_DAMAGE[1];
+                break;
+            case Input.Keys.NUM_3:
+                bulletHight = BULLET_HEIGHT[2];
+                damage = BULLET_DAMAGE[2];
+                break;
+            case Input.Keys.NUM_4:
+                bulletHight = BULLET_HEIGHT[3];
+                damage = BULLET_DAMAGE[3];
+                break;
+            case Input.Keys.NUM_5:
+                bulletHight = BULLET_HEIGHT[4];
+                damage = BULLET_DAMAGE[4];
+                break;
         }
         return false;
     }
@@ -164,4 +189,11 @@ public class MainShip extends Ship {
         v.setZero();
     }
 
+    public boolean isBulletCollision(Bullet bullet){
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > pos.y
+                || bullet.getTop() < getBottom()
+        );
+    }
 }
