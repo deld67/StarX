@@ -196,4 +196,12 @@ public class MainShip extends Ship {
                 || bullet.getTop() < getBottom()
         );
     }
+    public void reStartSheep(){
+        hp = HP;
+        startAutoShoot = false;
+        flushDestroy();
+        pos.set(0f, this.pos.y);
+        bulletHight = BULLET_HEIGHT[0];
+        damage = BULLET_DAMAGE[0];
+    }
 }
