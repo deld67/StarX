@@ -21,7 +21,7 @@ public class MainShip extends Ship {
 
     private static final int[] BULLET_DAMAGE = new int[]{1, 2, 3, 5, 10};
     private static final int INVALID_POINTER = -1;
-    private static final int HP = 10;
+    private static final int HP = 100;
 
 
     private int leftPointer;
@@ -196,6 +196,11 @@ public class MainShip extends Ship {
                 || bullet.getTop() < getBottom()
         );
     }
+
+    public  int getHp() {
+        return hp;
+    }
+
     public void reStartSheep(){
         hp = HP;
         leftPointer = INVALID_POINTER;
