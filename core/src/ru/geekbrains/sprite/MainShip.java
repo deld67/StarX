@@ -198,10 +198,15 @@ public class MainShip extends Ship {
     }
     public void reStartSheep(){
         hp = HP;
+        leftPointer = INVALID_POINTER;
+        rightPointer = INVALID_POINTER;
+        pressedLeft = false;
+        pressedRight = false;
         startAutoShoot = false;
-        flushDestroy();
-        pos.set(0f, this.pos.y);
-        bulletHight = BULLET_HEIGHT[0];
         damage = BULLET_DAMAGE[0];
+        bulletHight = BULLET_HEIGHT[0];
+        stop();
+        this.pos.x = 0;
+        flushDestroy();
     }
 }

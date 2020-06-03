@@ -130,6 +130,27 @@ public class GameScreen extends BaseScreen {
         return false;
     }
 
+    public void startNewGame(){
+        mainShip.reStartSheep();
+        bulletPool.freeAllActiveObject();
+        explosionPool.freeAllActiveObject();
+        enemyPool.freeAllActiveObject();
+        state = State.PLAYING;
+        music.play();
+        music.setLooping(true);
+    }
+    @Override
+    public void dispose() {
+        music.stop();
+        music.dispose();
+        backgroundImg.dispose();
+        mainAtlas.dispose();
+        bulletPool.dispose();
+        enemyPool.dispose();
+        explosionPool.dispose();
+        mainShip.dispose();
+        super.dispose();
+    }
     private void update(float delta){
         for (Star star: stars) {
             star.update(delta);
@@ -140,6 +161,8 @@ public class GameScreen extends BaseScreen {
             bulletPool.updateActiveSprites(delta);
             enemyPool.updateActiveSprites(delta);
             enemyEmitter.generate(delta);
+        }else if (state == State.GAME_OVER){
+            buttonNewGame.update(delta);
         }
     }
 
@@ -205,32 +228,7 @@ public class GameScreen extends BaseScreen {
         batch.end();
     }
 
-    public void  startGame(){
 
-        List<Enemy> enemyList = enemyPool.getActiveObjects();
-        List<Bullet> bulletList = bulletPool.getActiveObjects();
-        for (Enemy enemy: enemyList) {
-            enemy.destroy();
-        }
-        for (Bullet bullet: bulletList) {
-            bullet.destroy();
-        }
-        mainShip.reStartSheep();
-        music.play();
-        music.setLooping(true);
-        state = State.PLAYING;
-    }
 
-    @Override
-    public void dispose() {
-        music.stop();
-        music.dispose();
-        backgroundImg.dispose();
-        mainAtlas.dispose();
-        bulletPool.dispose();
-        enemyPool.dispose();
-        explosionPool.dispose();
-        mainShip.dispose();
-        super.dispose();
-    }
+
 }
